@@ -14,7 +14,7 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: "PlatesbyCere ✨ Homemade Happiness in Vallejo" },
       {
         property: "og:description",
-        content: "Cute homemade pastries, snacks & dipped treats. Pre-order on Instagram @platesbycere 💖",
+        content: "Cute homemade pastries, snacks & dipped treats. Pre-order on Instagram @whetfmyplate 💖",
       },
     ],
   }),
@@ -25,39 +25,43 @@ type MenuItem = {
   emoji: string;
   name: string;
   desc: string;
+  price: string;
   options?: string[]; // dropdown choices
   designRequired?: boolean; // requires a design reference/description
 };
 
 const MENU: MenuItem[] = [
-  { emoji: "🍔", name: "Sliders", desc: "Mini burgers, big flavor" },
+  { emoji: "🍔", name: "Sliders", desc: "Mini burgers, big flavor", price: "$2 each · $10–$11 for 4" },
   {
     emoji: "🍤",
     name: "Boudin Balls",
     desc: "Crispy & savory bites",
+    price: "$3 each · $12 for 3",
     options: ["With Hot Cheetos 🔥", "Without (regular)"],
   },
   {
     emoji: "🧀",
     name: "Mac n Cheese Balls",
     desc: "Regular or Hot Cheetos crusted 🔥",
+    price: "$3 each · $12 for 3",
     options: ["With Hot Cheetos 🔥", "Regular"],
   },
   {
     emoji: "🍝",
     name: "Chicken Alfredo",
     desc: "With or without shrimp 🍤",
+    price: "$10",
     options: ["With Shrimp 🍤", "Without Shrimp"],
   },
-  { emoji: "🍤", name: "Shrimp Pasta", desc: "Creamy & dreamy" },
-  { emoji: "🍰", name: "Cheesecake Cups", desc: "Lil cups of heaven" },
-  { emoji: "🍫", name: "Dubai Chocolate Cups", desc: "Pistachio + kataifi 😍 viral fave" },
-  { emoji: "🍓", name: "Chocolate Covered Strawberries", desc: "Dipped with love", designRequired: true },
-  { emoji: "🍪", name: "Chocolate Covered Oreos", desc: "Custom designs available", designRequired: true },
-  { emoji: "🥨", name: "Chocolate Covered Pretzels", desc: "Sweet + salty perfection", designRequired: true },
-  { emoji: "🍪", name: "Cake Cookies", desc: "Soft, thick & dreamy", designRequired: true },
-  { emoji: "🎂", name: "Mini Cakes", desc: "Custom designs on request", designRequired: true },
-  { emoji: "🍭", name: "More Dipped Treats", desc: "Just ask — I got you!", designRequired: true },
+  { emoji: "🍤", name: "Shrimp Pasta", desc: "Creamy & dreamy", price: "$10" },
+  { emoji: "🍰", name: "Cheesecake Cups", desc: "Lil cups of heaven", price: "$6" },
+  { emoji: "🍫", name: "Dubai Chocolate Cups", desc: "Pistachio + kataifi 😍 viral fave", price: "DM for price 💌" },
+  { emoji: "🍓", name: "Chocolate Covered Strawberries", desc: "Dipped with love", price: "$8 for 6 · $12 for a dozen", designRequired: true },
+  { emoji: "🍪", name: "Chocolate Covered Oreos", desc: "Custom designs available", price: "$8 for 6 · $12 for a dozen", designRequired: true },
+  { emoji: "🥨", name: "Chocolate Covered Pretzels", desc: "Sweet + salty perfection", price: "$8 for 6 · $12 for a dozen", designRequired: true },
+  { emoji: "🍪", name: "Cake Cookies", desc: "Soft, thick & dreamy", price: "$2 each · $5 for 4", designRequired: true },
+  { emoji: "🎂", name: "Mini Cakes", desc: "Custom designs on request", price: "$8 each", designRequired: true },
+  { emoji: "🍭", name: "More Dipped Treats", desc: "Just ask — I got you!", price: "$8 for 6 · $12 for a dozen", designRequired: true },
 ];
 
 const MENU_BY_NAME: Record<string, MenuItem> = Object.fromEntries(MENU.map((m) => [m.name, m]));
@@ -183,7 +187,7 @@ function Menu() {
           <p className="text-sm font-semibold uppercase tracking-widest text-primary">The menu</p>
           <h2 className="mt-2 text-3xl font-bold sm:text-4xl">Pick your faves 🍰</h2>
           <p className="mx-auto mt-3 max-w-md text-sm text-muted-foreground">
-            Everything is made fresh to order. DM me on IG for pricing or use the form below!
+            Everything is made fresh to order. Prices below — tap an item to pre-order!
           </p>
         </div>
 
@@ -200,6 +204,7 @@ function Menu() {
                 <div className="min-w-0">
                   <h3 className="truncate text-base font-bold">{item.name}</h3>
                   <p className="mt-0.5 text-sm text-muted-foreground">{item.desc}</p>
+                  <p className="mt-1 text-sm font-semibold text-primary">{item.price}</p>
                 </div>
               </div>
             </div>
@@ -253,7 +258,7 @@ function PreOrderForm() {
       `Hi Cere! 💖 I'd like to pre-order:%0A%0A` +
       `Name: ${data.get("name")}%0AContact: ${data.get("contact")}%0APickup: ${data.get("pickup")}%0A` +
       `Qty: ${data.get("quantity")}%0A%0AItems:%0A${itemsLines}%0A%0ANotes: ${data.get("details") ?? ""}`;
-    window.open(`https://instagram.com/platesbycere`, "_blank");
+    window.open(`https://www.instagram.com/whetfmyplate?igsh=M2xmcDUwbndzeXBj&utm_source=qr`, "_blank");
     window.location.href = `mailto:?subject=PlatesbyCere Pre-Order&body=${text}`;
     setSubmitted(true);
   };
@@ -265,7 +270,7 @@ function PreOrderForm() {
           <div className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-primary/15 text-3xl">🎉</div>
           <h2 className="mt-4 text-2xl font-bold">Thank you, sweet thing!</h2>
           <p className="mt-2 text-sm text-muted-foreground">
-            Your order request was prepared. Please also DM <span className="font-semibold">@platesbycere</span> on
+            Your order request was prepared. Please also DM <span className="font-semibold">@whetfmyplate</span> on
             Instagram to confirm and send your $4 deposit. 💖
           </p>
           <button
@@ -382,7 +387,7 @@ function PreOrderForm() {
                               className="mt-1 w-full rounded-xl border border-input bg-background px-3 py-2 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/30"
                             />
                             <p className="mt-1 text-[11px] text-muted-foreground">
-                              You can also DM the photo to @platesbycere after submitting.
+                              You can also DM the photo to @whetfmyplate after submitting.
                             </p>
                           </div>
                         )}
@@ -489,7 +494,7 @@ function Socials() {
     <section className="px-5 py-12">
       <div className="mx-auto max-w-xl">
         <a
-          href="https://instagram.com/platesbycere"
+          href="https://www.instagram.com/whetfmyplate?igsh=M2xmcDUwbndzeXBj&utm_source=qr"
           target="_blank"
           rel="noreferrer"
           className="group flex items-center gap-4 rounded-3xl bg-gradient-to-br from-primary to-accent p-6 text-primary-foreground shadow-xl transition-transform hover:-translate-y-1"
@@ -498,7 +503,7 @@ function Socials() {
             <Instagram className="h-7 w-7" />
           </div>
           <div className="min-w-0 flex-1">
-            <p className="truncate text-lg font-bold">@platesbycere</p>
+            <p className="truncate text-lg font-bold">@whetfmyplate</p>
             <p className="text-sm opacity-90">Pre-order on IG too! 💌</p>
           </div>
           <span className="hidden text-2xl sm:inline">✨</span>
