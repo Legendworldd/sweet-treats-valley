@@ -29,29 +29,57 @@ type MenuItem = {
   name: string;
   desc: string;
   price: string;
-  unitPrice: number; // for checkout calculation
+  unitPrice: number; // base/display unit price
   unitLabel: string; // e.g. "each", "per 6"
   options?: string[];
   designRequired?: boolean;
+  fixedQuantities?: number[]; // if set, qty picker is a select limited to these
 };
 
 const MENU: MenuItem[] = [
-  { emoji: "🍔", name: "Sliders", desc: "Mini burgers, big flavor", price: "$2 each · $10–$11 for 4", unitPrice: 2, unitLabel: "each" },
-  { emoji: "🍤", name: "Boudin Balls", desc: "Crispy & savory bites", price: "$3 each · $12 for 3", unitPrice: 3, unitLabel: "each", options: ["With Hot Cheetos 🔥", "Without (regular)"] },
-  { emoji: "🧀", name: "Mac n Cheese Balls", desc: "Regular or Hot Cheetos crusted 🔥", price: "$3 each · $12 for 3", unitPrice: 3, unitLabel: "each", options: ["With Hot Cheetos 🔥", "Regular"] },
+  { emoji: "🍔", name: "Sliders", desc: "Mini burgers, big flavor", price: "$2 each · 4 for $10 · +$2 each after", unitPrice: 2, unitLabel: "each" },
+  { emoji: "🍤", name: "Boudin Balls", desc: "Crispy & savory bites", price: "$3 each · 3 for $12 · +$3 each after", unitPrice: 3, unitLabel: "each", options: ["With Hot Cheetos 🔥", "Without (regular)"] },
+  { emoji: "🧀", name: "Mac n Cheese Balls", desc: "Regular or Hot Cheetos crusted 🔥", price: "$3 each · 3 for $12 · +$3 each after", unitPrice: 3, unitLabel: "each", options: ["With Hot Cheetos 🔥", "Regular"] },
   { emoji: "🍝", name: "Chicken Alfredo", desc: "With or without shrimp 🍤", price: "$10", unitPrice: 10, unitLabel: "plate", options: ["With Shrimp 🍤", "Without Shrimp"] },
   { emoji: "🍤", name: "Shrimp Pasta", desc: "Creamy & dreamy", price: "$10", unitPrice: 10, unitLabel: "plate" },
   { emoji: "🍰", name: "Cheesecake Cups", desc: "Lil cups of heaven", price: "$6", unitPrice: 6, unitLabel: "cup" },
   { emoji: "🍫", name: "Dubai Chocolate Cups", desc: "Pistachio + kataifi 😍 viral fave", price: "DM for price 💌", unitPrice: 0, unitLabel: "cup" },
-  { emoji: "🍓", name: "Chocolate Covered Strawberries", desc: "Dipped with love", price: "$8 for 6 · $12 for a dozen", unitPrice: 8, unitLabel: "per 6", designRequired: true },
-  { emoji: "🍪", name: "Chocolate Covered Oreos", desc: "Custom designs available", price: "$8 for 6 · $12 for a dozen", unitPrice: 8, unitLabel: "per 6", designRequired: true },
-  { emoji: "🥨", name: "Chocolate Covered Pretzels", desc: "Sweet + salty perfection", price: "$8 for 6 · $12 for a dozen", unitPrice: 8, unitLabel: "per 6", designRequired: true },
-  { emoji: "🍪", name: "Cake Cookies", desc: "Soft, thick & dreamy", price: "$2 each · $5 for 4", unitPrice: 2, unitLabel: "each", designRequired: true },
+  { emoji: "🍓", name: "Chocolate Covered Strawberries", desc: "Dipped with love", price: "$8 for 6 · $12 for a dozen", unitPrice: 8, unitLabel: "pieces", designRequired: true, fixedQuantities: [6, 12] },
+  { emoji: "🍪", name: "Chocolate Covered Oreos", desc: "Custom designs available", price: "$8 for 6 · $12 for a dozen", unitPrice: 8, unitLabel: "pieces", designRequired: true, fixedQuantities: [6, 12] },
+  { emoji: "🥨", name: "Chocolate Covered Pretzels", desc: "Sweet + salty perfection", price: "$8 for 6 · $12 for a dozen", unitPrice: 8, unitLabel: "pieces", designRequired: true, fixedQuantities: [6, 12] },
+  { emoji: "🍪", name: "Cake Cookies", desc: "Soft, thick & dreamy", price: "$2 each · 4 for $5 · +$2 each after", unitPrice: 2, unitLabel: "each", designRequired: true },
   { emoji: "🎂", name: "Mini Cakes", desc: "Custom designs on request", price: "$8 each", unitPrice: 8, unitLabel: "each", designRequired: true },
-  { emoji: "🍭", name: "More Dipped Treats", desc: "Just ask — I got you!", price: "$8 for 6 · $12 for a dozen", unitPrice: 8, unitLabel: "per 6", designRequired: true },
+  { emoji: "🍭", name: "More Dipped Treats", desc: "Just ask — I got you!", price: "$8 for 6 · $12 for a dozen", unitPrice: 8, unitLabel: "pieces", designRequired: true, fixedQuantities: [6, 12] },
 ];
 
 const MENU_BY_NAME: Record<string, MenuItem> = Object.fromEntries(MENU.map((m) => [m.name, m]));
+
+function priceFor(item: MenuItem, qty: number): number {
+  if (qty <= 0) return 0;
+  switch (item.name) {
+    case "Sliders":
+      // $2 each up to 3, 4 = $10, then +$2 per extra
+      if (qty < 4) return qty * 2;
+      return 10 + (qty - 4) * 2;
+    case "Boudin Balls":
+    case "Mac n Cheese Balls":
+      // $3 each up to 2, 3 = $12, then +$3 per extra
+      if (qty < 3) return qty * 3;
+      return 12 + (qty - 3) * 3;
+    case "Cake Cookies":
+      // $2 each up to 3, 4 = $5, then +$2 per extra
+      if (qty < 4) return qty * 2;
+      return 5 + (qty - 4) * 2;
+    case "Chocolate Covered Strawberries":
+    case "Chocolate Covered Oreos":
+    case "Chocolate Covered Pretzels":
+    case "More Dipped Treats":
+      // Only 6 or 12 allowed
+      return qty >= 12 ? 12 : 8;
+    default:
+      return item.unitPrice * qty;
+  }
+}
 
 function Index() {
   return (
