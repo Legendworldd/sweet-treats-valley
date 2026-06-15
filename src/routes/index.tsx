@@ -21,40 +21,92 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-const MENU = [
+type MenuItem = {
+  emoji: string;
+  name: string;
+  desc: string;
+  options?: string[]; // dropdown choices
+  designRequired?: boolean; // requires a design reference/description
+};
+
+const MENU: MenuItem[] = [
   { emoji: "🍔", name: "Sliders", desc: "Mini burgers, big flavor" },
-  { emoji: "🍤", name: "Boudin Balls", desc: "Crispy & savory bites" },
-  { emoji: "🧀", name: "Mac n Cheese Balls", desc: "Regular or Hot Cheetos crusted 🔥" },
-  { emoji: "🍝", name: "Chicken Alfredo", desc: "With or without shrimp 🍤" },
+  {
+    emoji: "🍤",
+    name: "Boudin Balls",
+    desc: "Crispy & savory bites",
+    options: ["With Hot Cheetos 🔥", "Without (regular)"],
+  },
+  {
+    emoji: "🧀",
+    name: "Mac n Cheese Balls",
+    desc: "Regular or Hot Cheetos crusted 🔥",
+    options: ["With Hot Cheetos 🔥", "Regular"],
+  },
+  {
+    emoji: "🍝",
+    name: "Chicken Alfredo",
+    desc: "With or without shrimp 🍤",
+    options: ["With Shrimp 🍤", "Without Shrimp"],
+  },
   { emoji: "🍤", name: "Shrimp Pasta", desc: "Creamy & dreamy" },
   { emoji: "🍰", name: "Cheesecake Cups", desc: "Lil cups of heaven" },
-  { emoji: "🍓", name: "Chocolate Covered Strawberries", desc: "Dipped with love" },
-  { emoji: "🍪", name: "Chocolate Covered Oreos", desc: "Custom designs available" },
-  { emoji: "🥨", name: "Chocolate Covered Pretzels", desc: "Sweet + salty perfection" },
-  { emoji: "🍪", name: "Cake Cookies", desc: "Soft, thick & dreamy" },
-  { emoji: "🎂", name: "Mini Cakes", desc: "Custom designs on request" },
-  { emoji: "🍭", name: "More Dipped Treats", desc: "Just ask — I got you!" },
+  { emoji: "🍫", name: "Dubai Chocolate Cups", desc: "Pistachio + kataifi 😍 viral fave" },
+  { emoji: "🍓", name: "Chocolate Covered Strawberries", desc: "Dipped with love", designRequired: true },
+  { emoji: "🍪", name: "Chocolate Covered Oreos", desc: "Custom designs available", designRequired: true },
+  { emoji: "🥨", name: "Chocolate Covered Pretzels", desc: "Sweet + salty perfection", designRequired: true },
+  { emoji: "🍪", name: "Cake Cookies", desc: "Soft, thick & dreamy", designRequired: true },
+  { emoji: "🎂", name: "Mini Cakes", desc: "Custom designs on request", designRequired: true },
+  { emoji: "🍭", name: "More Dipped Treats", desc: "Just ask — I got you!", designRequired: true },
 ];
+
+const MENU_BY_NAME: Record<string, MenuItem> = Object.fromEntries(MENU.map((m) => [m.name, m]));
 
 function Index() {
   return (
-    <div className="min-h-screen text-foreground">
-      <Hero />
-      <About />
-      <Menu />
-      <PreOrderForm />
-      <Socials />
-      <Footer />
+    <div className="relative min-h-screen text-foreground">
+      <FoodBackground />
+      <div className="relative">
+        <Hero />
+        <About />
+        <Menu />
+        <PreOrderForm />
+        <Socials />
+        <Footer />
+      </div>
+    </div>
+  );
+}
+
+// Rainbow-tinted scattered food emoji background
+function FoodBackground() {
+  const foods = [
+    "🧁","🍓","🍪","🎂","🍰","🍩","🍫","🍔","🍤","🧀","🍝","🍭","🍬","🥨","🌈","🍒","🍑","🍉","🍦","✨","🎀","🍇","🍯","🥞",
+    "🧁","🍓","🍪","🎂","🍰","🍩","🍫","🍔","🍤","🧀","🍝","🍭","🍬","🥨","🌈","🍒","🍑","🍉","🍦","✨","🎀","🍇","🍯","🥞",
+  ];
+  return (
+    <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+      <div className="absolute inset-0 bg-[var(--rainbow-wash)]" />
+      <div className="absolute inset-0 grid grid-cols-6 gap-6 p-4 opacity-[0.18] sm:grid-cols-8 sm:gap-8">
+        {foods.map((f, i) => (
+          <span
+            key={i}
+            className="select-none text-3xl sm:text-4xl"
+            style={{
+              transform: `rotate(${(i * 37) % 60 - 30}deg) translateY(${(i % 5) * 6}px)`,
+            }}
+          >
+            {f}
+          </span>
+        ))}
+      </div>
     </div>
   );
 }
 
 function FloatingEmoji({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
-    <span
-      aria-hidden
-      className={`pointer-events-none absolute select-none opacity-70 ${className}`}
-    >
+    <span aria-hidden className={`pointer-events-none absolute select-none opacity-70 ${className}`}>
       {children}
     </span>
   );
@@ -110,8 +162,9 @@ function About() {
           <p className="mt-4 text-base leading-relaxed text-foreground/80">
             I'm a high schooler at <span className="font-semibold">Jesse M. Bethel</span> in Vallejo, CA, and I love
             making delicious treats! I make <span className="font-semibold">sliders</span>, boudin balls, mac n cheese
-            balls (hot cheetos or regular), chicken alfredo with/without shrimp, shrimp pasta, cheesecake cups,
-            chocolate covered strawberries / oreos / pretzels, cake cookies, mini cakes and more dipped treats. 🍓🧁🍪
+            balls (hot cheetos or regular), chicken alfredo with/without shrimp, shrimp pasta, cheesecake cups, Dubai
+            chocolate cups, chocolate covered strawberries / oreos / pretzels, cake cookies, mini cakes and more dipped
+            treats. 🍓🧁🍪
           </p>
           <p className="mt-3 text-base leading-relaxed text-foreground/80">
             Every plate is made with love — let me bring a little homemade happiness to your day! 💖
@@ -157,36 +210,50 @@ function Menu() {
   );
 }
 
-const FORM_ITEMS = MENU.map((m) => m.name);
-
 function PreOrderForm() {
   const [selected, setSelected] = useState<string[]>([]);
+  const [variants, setVariants] = useState<Record<string, string>>({});
+  const [designs, setDesigns] = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState(false);
   const [deposit, setDeposit] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const toggle = (item: string) =>
     setSelected((s) => (s.includes(item) ? s.filter((i) => i !== item) : [...s, item]));
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setError(null);
     if (!deposit) return;
+
+    // Validate: each selected item with options must have a variant
+    for (const name of selected) {
+      const it = MENU_BY_NAME[name];
+      if (it.options && !variants[name]) {
+        setError(`Please pick an option for ${name}.`);
+        return;
+      }
+      if (it.designRequired && !(designs[name] && designs[name].trim().length > 0)) {
+        setError(`Please add a design reference or description for ${name}.`);
+        return;
+      }
+    }
+
     const data = new FormData(e.currentTarget);
-    const order = {
-      name: data.get("name"),
-      contact: data.get("contact"),
-      pickup: data.get("pickup"),
-      items: selected,
-      details: data.get("details"),
-      quantity: data.get("quantity"),
-      design: data.get("design"),
-    };
+    const itemsLines = selected
+      .map((n) => {
+        const parts = [n];
+        if (variants[n]) parts.push(`(${variants[n]})`);
+        if (designs[n]) parts.push(`— design: ${designs[n]}`);
+        return `- ${parts.join(" ")}`;
+      })
+      .join("%0A");
+
     const text =
       `Hi Cere! 💖 I'd like to pre-order:%0A%0A` +
-      `Name: ${order.name}%0AContact: ${order.contact}%0APickup: ${order.pickup}%0A` +
-      `Items: ${selected.join(", ")}%0AQty: ${order.quantity}%0A` +
-      `Details: ${order.details}%0ADesign: ${order.design}`;
+      `Name: ${data.get("name")}%0AContact: ${data.get("contact")}%0APickup: ${data.get("pickup")}%0A` +
+      `Qty: ${data.get("quantity")}%0A%0AItems:%0A${itemsLines}%0A%0ANotes: ${data.get("details") ?? ""}`;
     window.open(`https://instagram.com/platesbycere`, "_blank");
-    // Also offer SMS-style copy via mailto fallback
     window.location.href = `mailto:?subject=PlatesbyCere Pre-Order&body=${text}`;
     setSubmitted(true);
   };
@@ -205,6 +272,8 @@ function PreOrderForm() {
             onClick={() => {
               setSubmitted(false);
               setSelected([]);
+              setVariants({});
+              setDesigns({});
               setDeposit(false);
             }}
             className="mt-6 rounded-full bg-secondary px-6 py-2.5 text-sm font-semibold hover:bg-secondary/80"
@@ -242,41 +311,91 @@ function PreOrderForm() {
 
           <div>
             <label className="text-sm font-semibold">Pick your items 🍓</label>
-            <p className="text-xs text-muted-foreground">Check all that you'd like to order.</p>
-            <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
-              {FORM_ITEMS.map((item) => {
-                const checked = selected.includes(item);
+            <p className="text-xs text-muted-foreground">Tap to add. Some items need an option or design.</p>
+            <div className="mt-3 space-y-2">
+              {MENU.map((item) => {
+                const checked = selected.includes(item.name);
                 return (
-                  <label
-                    key={item}
-                    className={`flex cursor-pointer items-center gap-3 rounded-2xl px-3 py-2.5 text-sm ring-1 transition-colors ${
-                      checked
-                        ? "bg-primary/10 ring-primary text-foreground"
-                        : "bg-background ring-border hover:bg-secondary/60"
+                  <div
+                    key={item.name}
+                    className={`rounded-2xl ring-1 transition-colors ${
+                      checked ? "bg-primary/10 ring-primary" : "bg-background ring-border"
                     }`}
                   >
-                    <span
-                      className={`grid h-5 w-5 shrink-0 place-items-center rounded-md ring-1 ${
-                        checked ? "bg-primary text-primary-foreground ring-primary" : "bg-card ring-border"
-                      }`}
-                    >
-                      {checked && <Check className="h-3.5 w-3.5" />}
-                    </span>
-                    <span className="min-w-0 truncate">{item}</span>
-                    <input
-                      type="checkbox"
-                      className="sr-only"
-                      checked={checked}
-                      onChange={() => toggle(item)}
-                    />
-                  </label>
+                    <label className="flex cursor-pointer items-center gap-3 px-3 py-2.5 text-sm">
+                      <span
+                        className={`grid h-5 w-5 shrink-0 place-items-center rounded-md ring-1 ${
+                          checked ? "bg-primary text-primary-foreground ring-primary" : "bg-card ring-border"
+                        }`}
+                      >
+                        {checked && <Check className="h-3.5 w-3.5" />}
+                      </span>
+                      <span className="text-lg">{item.emoji}</span>
+                      <span className="min-w-0 flex-1 truncate font-medium">{item.name}</span>
+                      <input
+                        type="checkbox"
+                        className="sr-only"
+                        checked={checked}
+                        onChange={() => toggle(item.name)}
+                      />
+                    </label>
+
+                    {checked && (item.options || item.designRequired) && (
+                      <div className="space-y-3 border-t border-border/60 p-3">
+                        {item.options && (
+                          <div>
+                            <label className="text-xs font-semibold text-foreground/80">
+                              Choose an option <span className="text-primary">*</span>
+                            </label>
+                            <select
+                              required
+                              value={variants[item.name] ?? ""}
+                              onChange={(e) =>
+                                setVariants((v) => ({ ...v, [item.name]: e.target.value }))
+                              }
+                              className="mt-1 w-full rounded-xl border border-input bg-background px-3 py-2 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/30"
+                            >
+                              <option value="" disabled>
+                                Select an option…
+                              </option>
+                              {item.options.map((o) => (
+                                <option key={o} value={o}>
+                                  {o}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                        )}
+                        {item.designRequired && (
+                          <div>
+                            <label className="text-xs font-semibold text-foreground/80">
+                              Design reference or description <span className="text-primary">*</span>
+                            </label>
+                            <textarea
+                              required
+                              rows={2}
+                              value={designs[item.name] ?? ""}
+                              onChange={(e) =>
+                                setDesigns((d) => ({ ...d, [item.name]: e.target.value }))
+                              }
+                              placeholder="Paste a link to a pic OR describe the design (colors, theme, name, etc.)"
+                              className="mt-1 w-full rounded-xl border border-input bg-background px-3 py-2 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/30"
+                            />
+                            <p className="mt-1 text-[11px] text-muted-foreground">
+                              You can also DM the photo to @platesbycere after submitting.
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
                 );
               })}
             </div>
           </div>
 
           <Field
-            label="Quantity"
+            label="Total quantity"
             name="quantity"
             type="number"
             min={1}
@@ -286,15 +405,9 @@ function PreOrderForm() {
           />
 
           <TextArea
-            label="Custom details for cookies / cakes 🎀"
+            label="Anything else? (allergies, flavors, notes) 🎀"
             name="details"
-            placeholder="Flavors, colors, theme, allergies..."
-          />
-
-          <TextArea
-            label="Design requests ✨"
-            name="design"
-            placeholder="Hello Kitty, pink + gold, name on cake, etc."
+            placeholder="Allergies, flavors, color palette, theme..."
           />
 
           <label className="flex items-start gap-3 rounded-2xl bg-secondary/60 p-4 text-sm ring-1 ring-border">
@@ -310,6 +423,12 @@ function PreOrderForm() {
               my order. 💖
             </span>
           </label>
+
+          {error && (
+            <p className="rounded-xl bg-destructive/10 px-4 py-2 text-sm font-semibold text-destructive">
+              {error}
+            </p>
+          )}
 
           <button
             type="submit"
