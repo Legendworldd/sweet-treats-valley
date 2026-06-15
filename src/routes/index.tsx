@@ -265,7 +265,7 @@ function PreOrderForm() {
         name: n, emoji: it.emoji, qty,
         variant: variants[n], design: designs[n],
         unitPrice: it.unitPrice, unitLabel: it.unitLabel,
-        lineTotal: it.unitPrice * qty,
+        lineTotal: priceFor(it, qty),
       };
     });
     const subtotal = items.reduce((s, i) => s + i.lineTotal, 0);
