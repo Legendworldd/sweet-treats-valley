@@ -236,7 +236,8 @@ function PreOrderForm() {
         setQuantities((q) => { const n = { ...q }; delete n[item]; return n; });
         return next;
       }
-      setQuantities((q) => ({ ...q, [item]: q[item] ?? 1 }));
+      const def = MENU_BY_NAME[item].fixedQuantities?.[0] ?? 1;
+      setQuantities((q) => ({ ...q, [item]: q[item] ?? def }));
       return [...s, item];
     });
   };
