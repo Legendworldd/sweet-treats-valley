@@ -358,16 +358,30 @@ function PreOrderForm() {
                         <div>
                           <label className="text-xs font-semibold text-foreground/80">Quantity ({item.unitLabel}) <span className="text-primary">*</span></label>
                           <div className="mt-1 flex items-center gap-2">
-                            <button type="button" onClick={() => setQuantities((q) => ({ ...q, [item.name]: Math.max(1, (q[item.name] ?? 1) - 1) }))}
-                              className="grid h-9 w-9 place-items-center rounded-xl bg-secondary text-lg font-bold hover:bg-secondary/80">−</button>
-                            <input type="number" min={1} value={quantities[item.name] ?? 1}
-                              onChange={(e) => setQuantities((q) => ({ ...q, [item.name]: Math.max(1, parseInt(e.target.value) || 1) }))}
-                              className="h-9 w-20 rounded-xl border border-input bg-background px-3 text-center text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/30" />
-                            <button type="button" onClick={() => setQuantities((q) => ({ ...q, [item.name]: (q[item.name] ?? 1) + 1 }))}
-                              className="grid h-9 w-9 place-items-center rounded-xl bg-secondary text-lg font-bold hover:bg-secondary/80">+</button>
+                            {item.fixedQuantities ? (
+                              <select
+                                value={quantities[item.name] ?? item.fixedQuantities[0]}
+                                onChange={(e) => setQuantities((q) => ({ ...q, [item.name]: parseInt(e.target.value) }))}
+                                className="h-9 rounded-xl border border-input bg-background px-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/30"
+                              >
+                                {item.fixedQuantities.map((n) => (
+                                  <option key={n} value={n}>{n} pieces — ${priceFor(item, n).toFixed(2)}</option>
+                                ))}
+                              </select>
+                            ) : (
+                              <>
+                                <button type="button" onClick={() => setQuantities((q) => ({ ...q, [item.name]: Math.max(1, (q[item.name] ?? 1) - 1) }))}
+                                  className="grid h-9 w-9 place-items-center rounded-xl bg-secondary text-lg font-bold hover:bg-secondary/80">−</button>
+                                <input type="number" min={1} value={quantities[item.name] ?? 1}
+                                  onChange={(e) => setQuantities((q) => ({ ...q, [item.name]: Math.max(1, parseInt(e.target.value) || 1) }))}
+                                  className="h-9 w-20 rounded-xl border border-input bg-background px-3 text-center text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/30" />
+                                <button type="button" onClick={() => setQuantities((q) => ({ ...q, [item.name]: (q[item.name] ?? 1) + 1 }))}
+                                  className="grid h-9 w-9 place-items-center rounded-xl bg-secondary text-lg font-bold hover:bg-secondary/80">+</button>
+                              </>
+                            )}
                             {item.unitPrice > 0 && (
                               <span className="ml-auto text-sm font-semibold text-primary">
-                                ${(item.unitPrice * (quantities[item.name] ?? 1)).toFixed(2)}
+                                ${priceFor(item, quantities[item.name] ?? 1).toFixed(2)}
                               </span>
                             )}
                           </div>
