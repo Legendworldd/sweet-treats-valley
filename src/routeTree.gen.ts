@@ -9,38 +9,99 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as PreorderRouteImport } from './routes/preorder'
+import { Route as MenuRouteImport } from './routes/menu'
+import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiSendReceiptRouteImport } from './routes/api/send-receipt'
 
+const PreorderRoute = PreorderRouteImport.update({
+  id: '/preorder',
+  path: '/preorder',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MenuRoute = MenuRouteImport.update({
+  id: '/menu',
+  path: '/menu',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiSendReceiptRoute = ApiSendReceiptRouteImport.update({
+  id: '/api/send-receipt',
+  path: '/api/send-receipt',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/menu': typeof MenuRoute
+  '/preorder': typeof PreorderRoute
+  '/api/send-receipt': typeof ApiSendReceiptRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/menu': typeof MenuRoute
+  '/preorder': typeof PreorderRoute
+  '/api/send-receipt': typeof ApiSendReceiptRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/menu': typeof MenuRoute
+  '/preorder': typeof PreorderRoute
+  '/api/send-receipt': typeof ApiSendReceiptRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/about' | '/menu' | '/preorder' | '/api/send-receipt'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/about' | '/menu' | '/preorder' | '/api/send-receipt'
+  id: '__root__' | '/' | '/about' | '/menu' | '/preorder' | '/api/send-receipt'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
+  MenuRoute: typeof MenuRoute
+  PreorderRoute: typeof PreorderRoute
+  ApiSendReceiptRoute: typeof ApiSendReceiptRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/preorder': {
+      id: '/preorder'
+      path: '/preorder'
+      fullPath: '/preorder'
+      preLoaderRoute: typeof PreorderRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/menu': {
+      id: '/menu'
+      path: '/menu'
+      fullPath: '/menu'
+      preLoaderRoute: typeof MenuRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,22 +109,23 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/send-receipt': {
+      id: '/api/send-receipt'
+      path: '/api/send-receipt'
+      fullPath: '/api/send-receipt'
+      preLoaderRoute: typeof ApiSendReceiptRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
+  MenuRoute: MenuRoute,
+  PreorderRoute: PreorderRoute,
+  ApiSendReceiptRoute: ApiSendReceiptRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
