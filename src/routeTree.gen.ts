@@ -9,15 +9,15 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as MenuRouteImport } from './routes/menu'
 import { Route as PreorderRouteImport } from './routes/preorder'
+import { Route as MenuRouteImport } from './routes/menu'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiSendReceiptRouteImport } from './routes/api/send-receipt'
 
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const PreorderRoute = PreorderRouteImport.update({
+  id: '/preorder',
+  path: '/preorder',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MenuRoute = MenuRouteImport.update({
@@ -25,14 +25,14 @@ const MenuRoute = MenuRouteImport.update({
   path: '/menu',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PreorderRoute = PreorderRouteImport.update({
-  id: '/preorder',
-  path: '/preorder',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiSendReceiptRoute = ApiSendReceiptRouteImport.update({
@@ -43,49 +43,49 @@ const ApiSendReceiptRoute = ApiSendReceiptRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/menu': typeof MenuRoute
   '/preorder': typeof PreorderRoute
-  '/about': typeof AboutRoute
   '/api/send-receipt': typeof ApiSendReceiptRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/menu': typeof MenuRoute
   '/preorder': typeof PreorderRoute
-  '/about': typeof AboutRoute
   '/api/send-receipt': typeof ApiSendReceiptRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/menu': typeof MenuRoute
   '/preorder': typeof PreorderRoute
-  '/about': typeof AboutRoute
   '/api/send-receipt': typeof ApiSendReceiptRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/menu' | '/preorder' | '/about' | '/api/send-receipt'
+  fullPaths: '/' | '/about' | '/menu' | '/preorder' | '/api/send-receipt'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/menu' | '/preorder' | '/about' | '/api/send-receipt'
-  id: '__root__' | '/' | '/menu' | '/preorder' | '/about' | '/api/send-receipt'
+  to: '/' | '/about' | '/menu' | '/preorder' | '/api/send-receipt'
+  id: '__root__' | '/' | '/about' | '/menu' | '/preorder' | '/api/send-receipt'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
   MenuRoute: typeof MenuRoute
   PreorderRoute: typeof PreorderRoute
-  AboutRoute: typeof AboutRoute
   ApiSendReceiptRoute: typeof ApiSendReceiptRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/preorder': {
+      id: '/preorder'
+      path: '/preorder'
+      fullPath: '/preorder'
+      preLoaderRoute: typeof PreorderRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/menu': {
@@ -95,18 +95,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MenuRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/preorder': {
-      id: '/preorder'
-      path: '/preorder'
-      fullPath: '/preorder'
-      preLoaderRoute: typeof PreorderRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/about': {
       id: '/about'
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/send-receipt': {
@@ -121,9 +121,9 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
   MenuRoute: MenuRoute,
   PreorderRoute: PreorderRoute,
-  AboutRoute: AboutRoute,
   ApiSendReceiptRoute: ApiSendReceiptRoute,
 }
 export const routeTree = rootRouteImport
